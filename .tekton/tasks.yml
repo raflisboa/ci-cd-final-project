@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: verify-repository-name
+spec:
+  description: Verifica se o nome do repositório está conforme o laboratório da IBM.
+  params:
+    - name: repository-name
+      type: string
+      default: ci-cd-final-project
+  steps:
+    - name: check-name
+      image: bash:5.2
+      script: |
+        #!/usr/bin/env bash
+        set -e
+        if [ "$(params.repository-name)" != "ci-cd-final-project" ]; then
+          echo "ERRO: o nome do repositório deve ser 'ci-cd-final-project'."
+          exit 1
+        fi
+        echo "OK: nome do repositório válido: $(params.repository-name)"

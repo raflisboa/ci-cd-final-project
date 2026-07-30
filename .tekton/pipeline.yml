@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: ci-cd-final-project-pipeline
+spec:
+  params:
+    - name: repo-name
+      type: string
+      default: ci-cd-final-project
+      description: Nome do repositório exigido pelo laboratório IBM.
+  tasks:
+    - name: validate-repo-name
+      params:
+        - name: repo-name
+          value: $(params.repo-name)
+      taskSpec:
+        params:
+          - name: repo-name
+            type: string
+        steps:
+          - name: validate
+            image: bash:5.2
+            script: |
+              #!/usr/bin/env bash
+              set -e
+              REQUIRED="ci-cd-final-project"
+              if [ "$(params.repo-name)" != "$REQUIRED" ]; then
+                echo "ERRO: o nome do repositório deve ser '$REQUIRED'."
+                exit 1
+              fi
+              echo "OK: nome do repositório validado: $(params.repo-name)"
